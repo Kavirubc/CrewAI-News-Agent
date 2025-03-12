@@ -19,10 +19,10 @@ class AiNews():
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
 
-	ollama_llm = LLM(
-		model="ollama/deepseek-r1:8b ",
-		base_url="http://localhost:11434",
-	)
+	# ollama_llm = LLM(
+	# 	model="ollama/deepseek-r1:8b ",
+	# 	base_url="http://localhost:11434",
+	# )
 
 	# If you would like to add tools to your agents, you can learn more about it here:
 	# https://docs.crewai.com/concepts/agents#agent-tools
