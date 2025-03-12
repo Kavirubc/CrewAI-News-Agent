@@ -1,0 +1,43 @@
+retrieve_news_task:
+  description: >
+    Conduct a comprehensive web search to gather the latest and most relevant information about "{topic}".
+    Focus on finding credible and authoritative sources that provide detailed insights about the topic.
+    Ensure that the information is up-to-date, as the current date is {current_date}.
+  expected_output: >
+    A list of 10 websites with the most relevant and credible information about "{topic}".
+    Each entry should include the website's title, URL, and a brief summary of its content.
+  agent: retrieve_news
+
+website_scrape_task:
+  description: >
+    Scrape the content from the provided websites to extract detailed and accurate information.
+    Focus on retrieving key points, headlines, and summaries relevant to "{topic}".
+    Ensure that the extracted information is well-organized and free of unnecessary data.
+  expected_output: >
+    A structured summary of each website's content, including key points, headlines, and relevant details.
+    The output should be concise but comprehensive, capturing all important information from each source.
+  agent: website_scraper
+
+ai_news_write_task:
+  description: >
+    Using the extracted data from the websites, write a professional news article about "{topic}" in markdown format.
+    The article should include an engaging title, an introductory paragraph, and well-structured sections for each main topic.
+    Ensure that the article is informative, factually accurate, and written in a clear and concise style suitable for publication.
+  expected_output: >
+    A fully developed news article in markdown format. 
+    The article should have:
+      - A compelling title
+      - An engaging introduction
+      - Multiple sections with headings based on key topics
+      - Each section containing detailed and well-written content
+      - Proper use of markdown formatting (e.g., headings with `#`, lists with `-`, etc.)
+  agent: ai_news_writer
+
+file_write_task:
+  description: >
+    Save the completed news article to a file named "news_article.md" in the "news" directory.
+    Ensure that the file is properly formatted and includes all content from the previous task without any loss of information.
+  expected_output: >
+    A markdown file named "news_article.md" saved in the "news" directory.
+    The file should contain the full news article with proper formatting as specified in markdown format.
+  agent: file_writer
