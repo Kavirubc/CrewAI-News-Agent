@@ -2,6 +2,7 @@ from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool, FileWriterTool
 from dotenv import load_dotenv
+import agentops
 
 load_dotenv()
 
@@ -33,6 +34,8 @@ class AiNews():
 			tools=[SerperDevTool()],
 			verbose=True,
 		)
+		agentops.init(api_key=os.getenv("AGENTOPS_API_KEY"))
+	
 
 	@agent
 	def website_scraper(self) -> Agent:
@@ -85,6 +88,7 @@ class AiNews():
 			config=self.tasks_config['file_write_task'],
 		)
 
+	agentops.init(default_tags=['crewai'])
 	@crew
 	def crew(self) -> Crew:
 		"""Creates the AiNews crew"""
