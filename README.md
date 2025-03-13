@@ -1,54 +1,175 @@
-# AiNews Crew
+# CrewAI News Agent
 
-Welcome to the AiNews Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+A powerful multi-agent AI system designed to autonomously gather, analyze, and generate comprehensive news reports about artificial intelligence. Built using [crewAI](https://crewai.com), this project demonstrates how multiple specialized AI agents can collaborate to perform complex workflows with support for both OpenAI and local Ollama models.
 
-## Installation
+## 🚀 Features
 
-Ensure you have Python >=3.10 <3.13 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+- **Automated News Gathering**: Retrieves the latest AI news from various sources
+- **Web Scraping**: Extracts detailed information from relevant websites
+- **Content Generation**: Creates well-structured news reports based on gathered data
+- **File Management**: Automatically saves reports in markdown format
+- **Model Flexibility**: Support for both OpenAI and Ollama models
+- **Performance Tracking**: Integration with AgentOps for monitoring agent performance
 
-First, if you haven't already, install uv:
+
+## 📋 System Architecture
+
+The system consists of four specialized agents working together:
+
+
+| Agent | Role |
+| :-- | :-- |
+| News Retriever | Searches for the latest AI news using the SerperDev tool |
+| Website Scraper | Extracts detailed content from news sources |
+| AI News Writer | Analyzes information and creates comprehensive reports |
+| File Writer | Saves the generated content to markdown files |
+
+## 🛠️ Installation
+
+### Prerequisites
+
+- Python >=3.10 <3.13
+- [UV](https://docs.astral.sh/uv/) for dependency management
+- [Ollama](https://ollama.ai/) (optional, for local model execution)
+
+
+### Setup
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/Kavirubc/CrewAI-News-Agent.git
+cd CrewAI-News-Agent
+```
+
+2. Install UV if you haven't already:
 
 ```bash
 pip install uv
 ```
 
-Next, navigate to your project directory and install the dependencies:
+3. Install dependencies:
 
-(Optional) Lock the dependencies and install them by using the CLI command:
 ```bash
 crewai install
 ```
-### Customizing
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
+4. Add your API keys to the `.env` file:
 
-- Modify `src/ai_news/config/agents.yaml` to define your agents
-- Modify `src/ai_news/config/tasks.yaml` to define your tasks
-- Modify `src/ai_news/crew.py` to add your own logic, tools and specific args
-- Modify `src/ai_news/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
-
-```bash
-$ crewai run
+```
+OPENAI_API_KEY=your_openai_api_key
+AGENTOPS_API_KEY=your_agentops_api_key
 ```
 
-This command initializes the ai-news Crew, assembling the agents and assigning them tasks as defined in your configuration.
+5. (Optional) Install and run Ollama for local model execution:
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+```bash
+# Follow Ollama installation instructions at https://ollama.ai/
+# Pull the deepseek model
+ollama pull deepseek-r1:8b
+```
 
-## Understanding Your Crew
 
-The ai-news Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+## 🚀 Usage
 
-## Support
+Run the project from the root folder:
 
-For support, questions, or feedback regarding the AiNews Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+```bash
+crewai run
+```
 
-Let's create wonders together with the power and simplicity of crewAI.
+This command initializes the AI News Crew, which will:
+
+1. Search for the latest AI news
+2. Scrape relevant websites for detailed information
+3. Generate a comprehensive news report
+4. Save the report as `report.md` in the root folder
+
+## ⚙️ Customization
+
+- **Agents**: Modify `src/ai_news/config/agents.yaml` to adjust agent roles and capabilities
+- **Tasks**: Edit `src/ai_news/config/tasks.yaml` to change the workflow and instructions
+- **Core Logic**: Update `src/ai_news/crew.py` to add custom tools, LLMs, or processing logic
+- **Input Parameters**: Customize `src/ai_news/main.py` to provide specific inputs for your agents
+- **Model Selection**: Uncomment the Ollama LLM configuration in `crew.py` to use local models
+
+
+## 💻 Code Example
+
+The core of the project is the `AiNews` class which orchestrates the multi-agent system:
+
+```python
+@CrewBase
+class AiNews():
+    """AiNews crew"""
+    
+    agents_config = 'config/agents.yaml'
+    tasks_config = 'config/tasks.yaml'
+    
+    # Uncomment to use Ollama with local models
+    # ollama_llm = LLM(
+    #     model="ollama/deepseek-r1:8b ",
+    #     base_url="http://localhost:11434",
+    # )
+    
+    @agent
+    def retrieve_news(self) -> Agent:
+        return Agent(
+            config=self.agents_config['retrieve_news'],
+            tools=[SerperDevTool()],
+            verbose=True,
+        )
+        agentops.init(api_key=os.getenv("AGENTOPS_API_KEY"))
+    
+    # Additional agents and tasks defined...
+    
+    agentops.init(default_tags=['crewai'])
+    @crew
+    def crew(self) -> Crew:
+        """Creates the AiNews crew"""
+        return Crew(
+            agents=self.agents,
+            tasks=self.tasks,
+            process=Process.sequential,
+            verbose=True,
+        )
+```
+
+
+## 🔄 Process Flow
+
+1. The News Retriever agent searches for recent AI news using SerperDev
+2. The Website Scraper extracts detailed content from the identified sources
+3. The AI News Writer analyzes and synthesizes the information
+4. The File Writer saves the final report to a markdown file
+
+## 📊 Performance Monitoring
+
+This project integrates with [AgentOps](https://www.agentops.ai/) for monitoring and analyzing agent performance. AgentOps provides insights into:
+
+- Agent execution times
+- Task completion rates
+- Model performance metrics
+- Cost tracking
+
+To enable monitoring, ensure your AgentOps API key is set in the `.env` file.
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to submit issues or pull requests to help improve this project.
+
+## 📬 Contact
+
+**Kaviru Hapuarachchi**
+
+- Email: hello@kaviru.cc
+- GitHub: [Kavirubc](https://github.com/Kavirubc)
+
+
+## 🔗 Resources
+
+- [crewAI Documentation](https://docs.crewai.com)
+- [crewAI GitHub Repository](https://github.com/joaomdmoura/crewai)
+- [Ollama](https://ollama.ai/)
+- [AgentOps](https://www.agentops.ai/)
+- [Join crewAI Discord](https://discord.com/invite/X4JWnZnxPb)
