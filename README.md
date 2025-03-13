@@ -14,6 +14,34 @@ A powerful multi-agent AI system designed to autonomously gather, analyze, and g
 
 ## 📋 System Architecture
 
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CA as CrewAI News Agent
+    participant AO as agentops
+    U->>CA: Trigger news retrieval
+    CA->>AO: Initialize with API key (from .env)
+    CA->>AO: Set default tags ['crewai']
+    CA->>U: Return compiled news report
+
+```
+```mermaid
+
+sequenceDiagram
+    participant P as Process Flow
+    participant NG as News Gathering Agent
+    participant WS as Web Scraper
+    participant CG as Content Generator
+    participant PM as Performance Monitor (AgentOps)
+    P->>NG: Start news collection
+    NG->>WS: Scrape news data
+    WS-->>NG: Provide scraped data
+    NG->>CG: Generate news report
+    CG-->>NG: Return generated content
+    NG->>PM: Log performance metrics
+```
+
+
 The system consists of four specialized agents working together:
 
 
